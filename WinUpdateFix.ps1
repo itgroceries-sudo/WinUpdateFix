@@ -34,13 +34,13 @@ function Write-SafeTempScript {
 
 $LangDict = @{
     "EN" = @{ 
-        "Title"="WinUpdate Menu Fixer"; "Dev"="Developed by IT Groceries Shop"; 
+        "Title"="WinUpdate Menu Fixer"; "Dev"="Developed by IT Groceries Shop™ ♥ ♥ ♥"; 
         "Facebook"="Facebook"; "GitHub"="GitHub"; "About"="About"; "Exit"="EXIT"; 
         "Processing"="Applying..."; "Finished"="Finished"; "Start"="Apply Fix";
         "LangLabel"="Language" 
     }
     "TH" = @{ 
-        "Title"="แก้เมนูบังคับอัปเดต"; "Dev"="พัฒนาโดย IT Groceries Shop"; 
+        "Title"="แก้เมนูบังคับอัปเดต"; "Dev"="พัฒนาโดย IT Groceries Shop™ ♥ ♥ ♥"; 
         "Facebook"="Facebook"; "GitHub"="GitHub"; "About"="เกี่ยวกับ"; "Exit"="ออก"; 
         "Processing"="กำลังตั้งค่า..."; "Finished"="เสร็จสิ้น"; "Start"="ยืนยันการตั้งค่า";
         "LangLabel"="ภาษา" 
