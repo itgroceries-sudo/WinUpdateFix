@@ -250,7 +250,7 @@ Title="WinUpdate Fixer" Height="750" Width="600" WindowStartupLocation="Manual" 
     function Render-ModeList {
         $Stack.Children.Clear(); $D = $LangDict[$script:CurrentLang]
         foreach ($m in $Global:UpdateModes) {
-            $Row = New-Object System.Windows.Controls.Grid; $Row.Height = 48; $Row.Margin = "0,1,0,1"
+            $Row = New-Object System.Windows.Controls.Grid; $Row.Height = 42; $Row.Margin = "0,1,0,1"
             $Row.ColumnDefinitions.Add((New-Object System.Windows.Controls.ColumnDefinition -Property @{Width=[System.Windows.GridLength]::new(1, [System.Windows.GridUnitType]::Star)}))
             $Row.ColumnDefinitions.Add((New-Object System.Windows.Controls.ColumnDefinition -Property @{Width=[System.Windows.GridLength]::Auto}))
             
