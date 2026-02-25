@@ -24,6 +24,8 @@ exit /b
 $AppVersion = "1.2 Build 26.02.2026"
 $InstallDir = "$env:LOCALAPPDATA\ITG_WinUpdateFix"
 $TempScript = "$env:TEMP\WinUpFix_Temp.ps1"
+$GitHubRaw  = "https://raw.githubusercontent.com/itgroceries-sudo/WinUpdateFix/main"
+$SelfURL    = "$GitHubRaw/WinUpdateFix.ps1"
 $TargetFile = if ($ScriptPath) { $ScriptPath } elseif ($PSScriptRoot) { $PSCommandPath } else { $null }
 
 # Temp Script Generator (Enforce UTF8-BOM)
