@@ -11,7 +11,7 @@ exit /b
 
 # =========================================================
 #  THE ULTIMATE FIX FOR A FORCED WINDOWS UPDATE
-#  Version: 1.3 Build 26.02.2026
+#  Version: 1.4 Build 26.02.2026 (IEX/IRM Optimized)
 #  Framework: IT Groceries Shop (Layout Master)
 # =========================================================
 
@@ -21,7 +21,7 @@ exit /b
 # ---------------------------------------------------------
 # [1] CONFIG & LANGUAGE
 # ---------------------------------------------------------
-$AppVersion = "1.3 Build 26.02.2026"
+$AppVersion = "1.4 Build 26.02.2026"
 $InstallDir = "$env:LOCALAPPDATA\ITG_WinUpdateFix"
 $TempScript = "$env:TEMP\WinUpFix_Temp.ps1"
 $SelfURL    = "https://raw.githubusercontent.com/itgroceries-sudo/WinUpdateFix/main/WinUpdateFix.ps1"
@@ -34,13 +34,13 @@ function Write-SafeTempScript {
 
 $LangDict = @{
     "EN" = @{ 
-        "Title"="WinUpdate Menu Fixer"; "Dev"="Developed by IT Groceries Shop ♥ ♥ ♥"; 
+        "Title"="WinUpdate Menu Fixer"; "Dev"="Developed by IT Groceries Shop"; 
         "Facebook"="Facebook"; "GitHub"="GitHub"; "About"="About"; "Exit"="EXIT"; 
         "Processing"="Applying..."; "Finished"="Finished"; "Start"="Apply Fix";
         "LangLabel"="Language" 
     }
     "TH" = @{ 
-        "Title"="แก้เมนูบังคับอัปเดต"; "Dev"="พัฒนาโดย IT Groceries Shop ♥ ♥ ♥"; 
+        "Title"="แก้เมนูบังคับอัปเดต"; "Dev"="พัฒนาโดย IT Groceries Shop"; 
         "Facebook"="Facebook"; "GitHub"="GitHub"; "About"="เกี่ยวกับ"; "Exit"="ออก"; 
         "Processing"="กำลังตั้งค่า..."; "Finished"="เสร็จสิ้น"; "Start"="ยืนยันการตั้งค่า";
         "LangLabel"="ภาษา" 
@@ -101,7 +101,7 @@ if (-not $Silent -and -not $IsAdmin) {
             Write-Host "`n [INFO] Memory Execution Detected. Downloading with BOM to disk..." -ForegroundColor Yellow
             $WebClient = New-Object System.Net.WebClient; $WebClient.Encoding = [System.Text.Encoding]::UTF8
             $ScriptContent = $WebClient.DownloadString($SelfURL)
-            $Utf8WithBom = New-Object System.Text.UTF8Encoding $True
+            $Utf8WithBom = New-Object System.Text.UTF8Encoding($True)
             [System.IO.File]::WriteAllText($TempScript, $ScriptContent, $Utf8WithBom)
             Start-Process "powershell" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$TempScript`"" -Verb RunAs
         }
@@ -115,7 +115,7 @@ if (-not $Silent -and -not $IsAdmin) {
 Add-Type -AssemblyName PresentationFramework, System.Windows.Forms, System.Drawing
 $Graphics = [System.Drawing.Graphics]::FromHwnd([IntPtr]::Zero); $Scale = $Graphics.DpiX / 96.0; $Graphics.Dispose()
 
-$BaseW = 600; $BaseH = 800 
+$BaseW = 600; $BaseH = 750 
 $ConsoleW_Px = [int]($BaseW * $Scale); $ConsoleH_Px = [int]($BaseH * $Scale)
 $Scr = [System.Windows.Forms.Screen]::PrimaryScreen.WorkingArea
 
@@ -148,7 +148,7 @@ if ($Silent) { if ($ConsoleHandle) { [Win32.User32]::ShowWindow($ConsoleHandle, 
 if (!$Silent) {
     $host.UI.RawUI.BackgroundColor = "Black"; $host.UI.RawUI.ForegroundColor = "Gray"; Clear-Host
     Write-Host "`n==========================================" -ForegroundColor Green
-    Write-Host "   (V.1.3 Build 26.02.2026 : INIT)      " -ForegroundColor Green
+    Write-Host "   (V.1.4 Build 26.02.2026 : INIT)      " -ForegroundColor Green
     Write-Host "==========================================" -ForegroundColor Green
     Write-Host " [INFO] Loading Modules and checking keys..." -ForegroundColor Green
 }
@@ -156,14 +156,13 @@ if (!$Silent) {
 function Play-Sound($Type) { try { switch ($Type) { "Click" { [System.Media.SystemSounds]::Beep.Play() } "Tick" { [System.Console]::Beep(2000, 20) } "Warn" { [System.Media.SystemSounds]::Hand.Play() } "Done" { [System.Media.SystemSounds]::Asterisk.Play() } } } catch {} }
 
 # ---------------------------------------------------------
-# [5] XAML UI
+# [5] XAML UI (Safe Single-Quote String for IEX/IRM)
 # ---------------------------------------------------------
 try {
     if(!$Silent){ Write-Host " [INFO] Launching WPF GUI..." -ForegroundColor Yellow }
 
-    [xml]$xaml = @"
-<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-Title="WinUpdate Fixer" Height="$BaseH" Width="$BaseW" WindowStartupLocation="Manual" ResizeMode="NoResize" Background="#181818" WindowStyle="None" BorderBrush="#2196F3" BorderThickness="2">
+    [xml]$xaml = '<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+Title="WinUpdate Fixer" Height="750" Width="600" WindowStartupLocation="Manual" ResizeMode="NoResize" Background="#181818" WindowStyle="None" BorderBrush="#2196F3" BorderThickness="2">
     <Window.Resources>
         <Style x:Key="BlueSwitch" TargetType="{x:Type CheckBox}">
             <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="{x:Type CheckBox}"><Border x:Name="T" Width="44" Height="24" Background="#3E3E3E" CornerRadius="22" Cursor="Hand"><Border x:Name="D" Width="20" Height="20" Background="White" CornerRadius="20" HorizontalAlignment="Left" Margin="2,0,0,0"><Border.RenderTransform><TranslateTransform x:Name="Tr" X="0"/></Border.RenderTransform></Border></Border><ControlTemplate.Triggers><Trigger Property="IsChecked" Value="True"><Trigger.EnterActions><BeginStoryboard><Storyboard><DoubleAnimation Storyboard.TargetName="Tr" Storyboard.TargetProperty="X" To="20" Duration="0:0:0.2"/><ColorAnimation Storyboard.TargetName="T" Storyboard.TargetProperty="Background.Color" To="#2196F3" Duration="0:0:0.2"/></Storyboard></BeginStoryboard></Trigger.EnterActions><Trigger.ExitActions><BeginStoryboard><Storyboard><DoubleAnimation Storyboard.TargetName="Tr" Storyboard.TargetProperty="X" To="0" Duration="0:0:0.2"/><ColorAnimation Storyboard.TargetName="T" Storyboard.TargetProperty="Background.Color" To="#3E3E3E" Duration="0:0:0.2"/></Storyboard></BeginStoryboard></Trigger.ExitActions></Trigger><Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.5"/></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter>
@@ -200,7 +199,7 @@ Title="WinUpdate Fixer" Height="$BaseH" Width="$BaseW" WindowStartupLocation="Ma
         </Grid>
         
         <Border Grid.Row="2" Background="#1E1E1E" CornerRadius="5">
-            <ScrollViewer VerticalScrollBarVisibility="Hidden"><StackPanel x:Name="List"/></ScrollViewer>
+            <ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel x:Name="List"/></ScrollViewer>
         </Border>
         
         <Grid Grid.Row="3" Margin="0,15,0,8">
@@ -213,4 +212,144 @@ Title="WinUpdate Fixer" Height="$BaseH" Width="$BaseW" WindowStartupLocation="Ma
             <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal" Grid.Column="0">
                  <Button x:Name="BF" Style="{StaticResource LabeledBtn}"><StackPanel Orientation="Horizontal"><TextBlock Text="f" Foreground="#1877F2" FontSize="28" FontWeight="Bold" Margin="0,-4,8,0" VerticalAlignment="Center"/><TextBlock x:Name="T_FB" Text="Facebook" Foreground="White" VerticalAlignment="Center"/></StackPanel></Button>
-                 <Button x:Name="BG" Style="{StaticResource LabeledBtn}"><StackPanel Orientation="Horizontal"><Viewbox Width="26" Height="26" Margin="0,0,8,0"><Path Fill="White" Data="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.
+                 <Button x:Name="BG" Style="{StaticResource LabeledBtn}"><StackPanel Orientation="Horizontal"><Viewbox Width="26" Height="26" Margin="0,0,8,0"><Path Fill="White" Data="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></Viewbox><TextBlock x:Name="T_Git" Text="GitHub" Foreground="White" VerticalAlignment="Center"/></StackPanel></Button>
+                 <Button x:Name="BAbt" Style="{StaticResource LabeledBtn}" Background="#607D8B"><StackPanel Orientation="Horizontal"><Viewbox Width="26" Height="26" Margin="0,0,8,0"><Path Fill="White" Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></Viewbox><TextBlock x:Name="T_Abt" Text="About" Foreground="White" VerticalAlignment="Center"/></StackPanel></Button>
+                 <Button x:Name="BLang" Style="{StaticResource LabeledBtn}" Background="#444"><StackPanel Orientation="Horizontal"><Viewbox Width="26" Height="26" Margin="0,0,8,0"><Path Fill="White" Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></Viewbox><TextBlock x:Name="T_Lang" Text="TH / EN" Foreground="White" VerticalAlignment="Center"/></StackPanel></Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Column="2" HorizontalAlignment="Right">
+                <Button x:Name="BC" Content="EXIT" Width="100" Height="50" Background="#D32F2F" Foreground="White" Style="{StaticResource Btn}" Cursor="Hand" FontSize="16"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>'
+
+    $reader = (New-Object System.Xml.XmlNodeReader $xaml); $Window = [Windows.Markup.XamlReader]::Load($reader)
+    try { $Window.Left = $WindowX_WPF; $Window.Top = $WindowY_WPF } catch {}
+
+    $Stack=$Window.FindName("List"); $BA=$Window.FindName("BA"); $BC=$Window.FindName("BC"); 
+    $BF=$Window.FindName("BF"); $BG=$Window.FindName("BG"); $BAbt=$Window.FindName("BAbt"); 
+    $BLang=$Window.FindName("BLang"); $BCredit=$Window.FindName("BCredit")
+
+    $RegPath = "HKLM:\SOFTWARE\Microsoft\WindowsUpdate\Orchestrator"
+    $CurrentVal = try { (Get-ItemProperty -Path $RegPath -Name "ShutdownFlyoutOptions" -ErrorAction Stop).ShutdownFlyoutOptions.ToString("x") } catch { "0" }
+
+    function Set-RadioLogic($SenderTag) {
+        foreach ($item in $Stack.Children) {
+            $itemChk = $item.Child.Children[1]
+            if ($itemChk.Tag -ne $SenderTag) {
+                $itemChk.IsChecked = $false
+                $item.BorderBrush = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#333333")
+            } else {
+                $itemChk.IsChecked = $true
+                $item.BorderBrush = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#2196F3")
+            }
+        }
+        Update-StartButton
+    }
+
+    function Render-ModeList {
+        $Stack.Children.Clear(); $D = $LangDict[$script:CurrentLang]
+        foreach ($m in $Global:UpdateModes) {
+            $Row = New-Object System.Windows.Controls.Grid; $Row.Height = 48; $Row.Margin = "0,1,0,1"
+            $Row.ColumnDefinitions.Add((New-Object System.Windows.Controls.ColumnDefinition -Property @{Width=[System.Windows.GridLength]::new(1, [System.Windows.GridUnitType]::Star)}))
+            $Row.ColumnDefinitions.Add((New-Object System.Windows.Controls.ColumnDefinition -Property @{Width=[System.Windows.GridLength]::Auto}))
+            
+            $Bor = New-Object System.Windows.Controls.Border; $Bor.CornerRadius = 5; $Bor.Background = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#252526"); $Bor.Padding = "10,5,10,5"; $Bor.Child = $Row; $Bor.Cursor = "Hand"; $Bor.Tag = $m.Hex
+            $Bor.Margin = "0,0,0,4"; $Bor.BorderThickness = "1"; $Bor.BorderBrush = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#333333")
+            
+            $Txt = New-Object System.Windows.Controls.TextBlock; 
+            $Txt.Text = if ($script:CurrentLang -eq "TH") { $m.DescTH } else { $m.DescEN }
+            $Txt.Foreground="White"; $Txt.FontSize=16; $Txt.FontWeight="SemiBold"; $Txt.VerticalAlignment="Center"; $Txt.Margin="5,0,0,0"
+            
+            $Chk = New-Object System.Windows.Controls.CheckBox; $Chk.Style=$Window.Resources["BlueSwitch"]; $Chk.VerticalAlignment="Center"; $Chk.Tag = $m.Hex 
+            
+            if ($m.Hex -eq $CurrentVal) { $Chk.IsChecked = $true; $Bor.BorderBrush = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#2196F3") }
+            
+            [System.Windows.Controls.Grid]::SetColumn($Txt,0); $Row.Children.Add($Txt)|Out-Null
+            [System.Windows.Controls.Grid]::SetColumn($Chk,1); $Row.Children.Add($Chk)|Out-Null
+            $Stack.Children.Add($Bor)|Out-Null
+            
+            $Chk.Add_Click({
+                param($sender, $e)
+                Play-Sound "Tick"
+                Set-RadioLogic $sender.Tag
+            })
+
+            $Bor.Add_MouseLeftButtonUp({ 
+                param($sender, $e)
+                Play-Sound "Tick"
+                Set-RadioLogic $sender.Tag
+            })
+        }
+    }
+
+    function Update-Language {
+        $D = $LangDict[$script:CurrentLang]
+        $Window.FindName("T_Title").Text = $D["Title"]; $Window.FindName("T_Dev").Text = $D["Dev"]
+        $Window.FindName("T_FB").Text = $D["Facebook"]; $Window.FindName("T_Git").Text = $D["GitHub"]
+        $Window.FindName("T_Abt").Text = $D["About"]; $BC.Content = $D["Exit"]; $BA.Content = $D["Start"]
+        $Window.FindName("T_Lang").Text = $D["LangLabel"]
+        Render-ModeList
+    }
+
+    function Update-StartButton {
+        $HasTarget = ($Stack.Children | Where-Object { $_.Child.Children[1].IsChecked }).Count -gt 0
+        if ($HasTarget) { $BA.IsEnabled = $true; $BA.Opacity = 1.0; $BA.Cursor = "Hand" } else { $BA.IsEnabled = $false; $BA.Opacity = 0.5; $BA.Cursor = "No" }
+    }
+
+    Update-Language; Update-StartButton
+
+    $BCredit.Add_Click({ Start-Process "https://www.youtube.com/watch?v=cz-M6cWlrdo&t=386s"; Play-Sound "Click" })
+    $BF.Add_Click({ Start-Process "https://www.facebook.com/Adm1n1straTOE"; Play-Sound "Click" })
+    $BG.Add_Click({ Start-Process "https://github.com/itgroceries-sudo/WinUpdateFix"; Play-Sound "Click" }) 
+    $BAbt.Add_Click({ Play-Sound "Click"; [System.Windows.MessageBox]::Show("WinUpdate Fixer`nVersion: $AppVersion`n`nDeveloped by IT Groceries Shop", "About", [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Information) | Out-Null })
+    $BLang.Add_Click({ if ($script:CurrentLang -eq "EN") { $script:CurrentLang = "TH" } else { $script:CurrentLang = "EN" }; Play-Sound "Click"; Update-Language })
+    $BC.Add_Click({ Play-Sound "Click"; if(!$Silent){ Write-Host "`n [EXIT] Clean & Bye !!" -ForegroundColor Cyan }; [System.Windows.Forms.Application]::DoEvents(); Start-Sleep 1; if ($PSCommandPath -eq $TempScript) { Start-Process "cmd.exe" -ArgumentList "/c timeout /t 2 >nul & del `"$TempScript`"" -WindowStyle Hidden }; $Window.Close(); [Environment]::Exit(0) })
+    
+    # ---------------------------------------------------------
+    # [7] APPLY FIX LOGIC
+    # ---------------------------------------------------------
+    $BA.Add_Click({ 
+        Play-Sound "Click"
+        $Sel = $Stack.Children | Where-Object { $_.Child.Children[1].IsChecked }
+        if ($Sel.Count -eq 0) { return }
+        
+        $BA.IsEnabled = $false
+        $BA.Content = $LangDict[$script:CurrentLang]["Processing"]
+        
+        $SelectedHex = $Sel[0].Tag
+        $DecValue = [convert]::ToInt32($SelectedHex, 16)
+        
+        if(!$Silent){ Write-Host "`n [ACTION] Applying Hex Mode: $SelectedHex (Decimal: $DecValue)" -ForegroundColor Yellow }
+        
+        try {
+            if (!(Test-Path $RegPath)) { New-Item -Path $RegPath -Force | Out-Null }
+            Set-ItemProperty -Path $RegPath -Name "ShutdownFlyoutOptions" -Value $DecValue -Type DWord -Force
+            if(!$Silent){ Write-Host " -> Set ShutdownFlyoutOptions = $DecValue" -ForegroundColor Green }
+            
+            if ($SelectedHex -eq "0") {
+                Remove-ItemProperty -Path $RegPath -Name "EnhancedShutdownEnabled" -ErrorAction SilentlyContinue
+                if(!$Silent){ Write-Host " -> Deleted EnhancedShutdownEnabled for Normal behavior" -ForegroundColor Green }
+            }
+            
+            Write-SafeTempScript -FilePath $TempScript -Content "Set Registry Mode: $SelectedHex"
+            
+        } catch {
+            if(!$Silent){ Write-Host " [ERROR] $_" -ForegroundColor Red }
+        }
+
+        $BA.Content = $LangDict[$script:CurrentLang]["Finished"]
+        Play-Sound "Done"
+        Start-Sleep 2
+        $BA.IsEnabled = $true
+        $BA.Content = $LangDict[$script:CurrentLang]["Start"]
+    })
+    
+    $Window.ShowDialog() | Out-Null
+
+} catch {
+    Write-Host "`n [FATAL ERROR] The application crashed:" -ForegroundColor Red
+    Write-Host " $_" -ForegroundColor Red
+    Write-Host "`n Press Enter to exit..." -ForegroundColor Gray
+    Read-Host
+}
